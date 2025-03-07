@@ -1,9 +1,9 @@
 from django.urls import path, include
 from .views import (
-    UserAuthView
+    UserView
 )
 
 
 urlpatterns = [
-    path('auth/', UserAuthView.as_view()),
+    path('getData/', UserView.as_view()),
 ]
