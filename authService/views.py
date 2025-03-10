@@ -1,32 +1,38 @@
-from django.shortcuts import render
 from django.contrib.auth.models import User
-from django.views import View
-from django.http import HttpResponse
-from django.contrib.auth import authenticate
-import json
+from django.contrib.auth import authenticate, login
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.views.decorators.csrf import csrf_exempt
+from django.middleware.csrf import get_token
+from .serializers import UserAuthSerializer
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
-class Signup(View):
-
+class Signup(APIView):
+    @csrf_exempt
     def post(self, request):
-        body = json.loads(request.body)
-        user = User.objects.create_user(
-            username=body['username'], 
-            email=body['email'], 
-            password=body['password'])
-        user.save()
-        return render(request, 'login.html')
-    
-    def get(self, request):
-        return render(request, 'signup.html')
-    
+        try:
+            print(User.username)
+            user = User.objects.create_user(
+                username=request.data.get('username'), 
+                email=request.data.get('email'), 
+                password=request.data.get('password'))
+            user.save()
+            serializer = UserAuthSerializer(user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED) 
+        except:
+            return Response("Cant create user", status=status.HTTP_400_BAD_REQUEST)
 
-class Login(View):
-    
-    def get(self, request):
-        body = json.loads(request.body)
-        user = authenticate(username=body['username'], password=body['password'])
+class Login(APIView):
+    @csrf_exempt
+    def post(self, request):
+        user = authenticate(username=request.data.get('username'), password=request.data.get('password'))
         if user is not None:
-            return HttpResponse("<h1>Login Success</h1>", status=200)
+            serializer = UserAuthSerializer(user)
+            get_token(request)
+            login(request, user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return HttpResponse("<h1>Login Failed</h1>", status=401)
+            return Response("User not found", status=status.HTTP_404_NOT_FOUND)

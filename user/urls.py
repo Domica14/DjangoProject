@@ -1,9 +1,11 @@
 from django.urls import path, include
 from .views import (
-    UserView
+    UserView,
+    EditUserView
 )
 
 
 urlpatterns = [
-    path('getData/', UserView.as_view()),
+    path('user/', UserView.as_view()),
+    path('user/<int:user_id>', EditUserView.as_view()),
 ]
