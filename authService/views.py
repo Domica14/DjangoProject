@@ -6,8 +6,7 @@ from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
 from django.middleware.csrf import get_token
 from .serializers import UserAuthSerializer
-from rest_framework.authentication import BasicAuthentication, SessionAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
 
 # Create your views here.
 class Signup(APIView):
@@ -33,6 +32,12 @@ class Login(APIView):
             serializer = UserAuthSerializer(user)
             get_token(request)
             login(request, user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            refresh = RefreshToken.for_user(user)
+            
+            return Response({
+                'user': serializer.data,
+                'refresh': str(refresh),
+                'access': str(refresh.access_token)
+            }, status=status.HTTP_200_OK)
         else:
             return Response("User not found", status=status.HTTP_404_NOT_FOUND)

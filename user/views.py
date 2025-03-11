@@ -4,6 +4,8 @@ from user.serializers import UserSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.tokens import RefreshToken
 
 # Create your views here.
 
@@ -11,10 +13,18 @@ class UserView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        users = User.objects.get(user=request.user.id)
-        serializer = UserSerializer(users)
-        request.session['user'] = 'This is session data'
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        user = User.objects.get(user=request.user.id)
+        serializer = UserSerializer(user)
+        refresh = RefreshToken.for_user(user)
+        response = Response({
+            'user': serializer.data,
+            'refresh': str(refresh),
+            'access': str(refresh.access_token)
+        }, status=status.HTTP_200_OK)
+        response.set_cookie(key='refresh', value=str(refresh), httponly=True, max_age=60 * 60 * 24 * 7)
+        response.set_cookie(key='access', value=str(refresh.access_token), httponly=True, max_age=60 * 60 * 24 * 7)
+        
+        return response
     
     def post(self, request):
         newUser = {
@@ -64,3 +74,4 @@ class EditUserView(APIView):
             return Response("User deleted", status=status.HTTP_200_OK)
         else:
             return Response("User can't be deleted", status=status.HTTP_404_NOT_FOUND)
+        
