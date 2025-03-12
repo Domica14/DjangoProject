@@ -8,9 +8,9 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'first_name', 'last_name', 'phone', 'user']
 
 
-class MyTokenPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-        token['user'] = UserSerializer(user).data
-        return token
+# class MyTokenPairSerializer(TokenObtainPairSerializer):
+#     @classmethod
+#     def get_token(cls, user):
+#         token = super().get_token(user)
+#         token['user'] = UserSerializer(user).data
+#         return token
