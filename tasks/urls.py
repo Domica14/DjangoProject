@@ -6,5 +6,5 @@ from tasks.views import (
 
 urlpatterns = [
     path('tasks/', TaskView.as_view()),
-    path('/tasks/<uuid:id_task>', EditTaskView.as_view())
+    path('tasks/<uuid:task_id>', EditTaskView.as_view())
 ]
