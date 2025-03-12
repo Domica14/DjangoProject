@@ -10,8 +10,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 # Create your views here.
 
 class UserView(APIView):
-    # permission_classes = [IsAuthenticated]
-    # authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
 
     def get(self, request):
         user = User.objects.get(user=request.user.id)
@@ -43,8 +43,8 @@ class UserView(APIView):
         
 
 class EditUserView(APIView):
-    # permission_classes = [IsAuthenticated]
-    # authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
 
     def exists(self, id):
         try:

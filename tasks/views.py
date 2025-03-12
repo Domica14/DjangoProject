@@ -11,8 +11,8 @@ from django.utils import timezone
 # Create your views here.
 
 class TaskView(APIView):
-    # permission_classes = [IsAuthenticated]
-    # authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
 
     def get(self, request):
         try:
@@ -40,8 +40,8 @@ class TaskView(APIView):
             return Response("Can't create any task", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class EditTaskView(APIView):
-    # permission_classes = [IsAuthenticated]
-    # authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
 
     def exists(self, task_id):
         try:
