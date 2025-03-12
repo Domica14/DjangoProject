@@ -11,6 +11,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 class UserView(APIView):
     permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
 
     def get(self, request):
         user = User.objects.get(user=request.user.id)
