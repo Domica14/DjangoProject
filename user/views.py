@@ -44,6 +44,7 @@ class UserView(APIView):
 
 class EditUserView(APIView):
     permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
 
     def exists(self, id):
         try:

@@ -39,6 +39,9 @@ class TaskView(APIView):
             return Response("Can't create any task", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class EditTaskView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
     def exists():
         pass
     
