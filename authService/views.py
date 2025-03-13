@@ -30,14 +30,14 @@ class Login(APIView):
         user = authenticate(username=request.data.get('username'), password=request.data.get('password'))
         if user is not None:
             serializer = UserAuthSerializer(user)
-            get_token(request)
             login(request, user)
             refresh = RefreshToken.for_user(user)
             
             return Response({
                 'user': serializer.data,
                 'refresh': str(refresh),
-                'access': str(refresh.access_token)
+                'access': str(refresh.access_token),
+                'csrfToken': get_token(request)
             }, status=status.HTTP_200_OK)
         else:
             return Response("User not found", status=status.HTTP_404_NOT_FOUND)
